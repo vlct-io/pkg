@@ -10,7 +10,7 @@ import (
 func MustGetEnv(variable string) string {
 	v := os.Getenv(variable)
 	if v == "" {
-		log.Panicf("%v environment variable not set.", variable)
+		log.Fatalf("%v environment variable not set.", variable)
 	}
 	return v
 }
@@ -20,11 +20,7 @@ func MustGetEnv(variable string) string {
 func MustGetEnvs(variables ...string) []string {
 	var values []string
 	for _, v := range variables {
-		val := os.Getenv(v)
-		if v == "" {
-			log.Panicf("%v environment variable not set.", val)
-		}
-		values = append(values, val)
+		values = append(values, MustGetEnv(v))
 	}
 	return values
 }
