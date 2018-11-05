@@ -11,13 +11,16 @@ import (
 )
 
 // cloudKMS makes it easy to interact with GCP's Cloud KMS service.
-//
-// cloudKMS assumes you have the "GOOGLE_APPLICATION_CREDENTIALS" environment
+// Assumes you have the "GOOGLE_APPLICATION_CREDENTIALS" environment
 // variable setup in your environment with access to the Cloud KMS service.
-// Documentation: https://cloud.google.com/docs/authentication/getting-started
+//
+// Authentication documentation: https://cloud.google.com/docs/authentication/getting-started
 // Go client library: https://cloud.google.com/kms/docs/reference/libraries#client-libraries-install-go
 //
-// Remember to create a KeyRing and CryptoKey following this documentation: https://cloud.google.com/kms/docs/creating-keys
+// Remember to create a KeyRing and CryptoKey.
+// Documentation: https://cloud.google.com/kms/docs/creating-keys
+//
+// Cloud KMS pricing: https://cloud.google.com/kms/pricing
 //
 type cloudKMS struct {
 	ProjectID   string
