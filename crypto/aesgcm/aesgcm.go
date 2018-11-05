@@ -1,4 +1,4 @@
-package crypter
+package aesgcm
 
 import (
 	"crypto/aes"
@@ -6,25 +6,32 @@ import (
 	"crypto/rand"
 	"io"
 
-	"github.com/vlct-io/pkg/crypter"
+	"github.com/vlct-io/pkg/crypto"
 
 	"github.com/pkg/errors"
 )
 
-// AESGCM mplements the Encrypt/Decrypt methods
+// aesgcm mplements the Encrypt/Decrypt methods
 // using AES-GCM: https://eprint.iacr.org/2015/102.pdf
-type AESGCM struct {
+type aesgcm struct {
 	//  either 16, 24, or 32 bytes to select
 	// AES-128, AES-192, or AES-256.
 	Key string
 }
 
 // validate interface conformity.
-var _ crypter.Crypter = AESGCM{}
+var _ crypto.Crypter = aesgcm{}
+
+// New makes a new aes-gcm Crypter.
+func New(key string) crypto.Crypter {
+	return aesgcm{
+		Key: key,
+	}
+}
 
 // Encrypt ciphers the plainText using the provided 32 bytes key
 // with AES256/GCM and returns a base64 encoded string.
-func (ag AESGCM) Encrypt(plainText []byte) (cypherText []byte, err error) {
+func (ag aesgcm) Encrypt(plainText []byte) (cypherText []byte, err error) {
 	_key := []byte(ag.Key)
 	_cipher, err := aes.NewCipher(_key)
 	if err != nil {
@@ -43,7 +50,7 @@ func (ag AESGCM) Encrypt(plainText []byte) (cypherText []byte, err error) {
 
 // Decrypt deciphers the provided base64 encoded and AES/GCM ciphered
 // data returning the original plainText string.
-func (ag AESGCM) Decrypt(cipherText []byte) (plainText []byte, err error) {
+func (ag aesgcm) Decrypt(cipherText []byte) (plainText []byte, err error) {
 	_key := []byte(ag.Key)
 	_cipher, err := aes.NewCipher(_key)
 	if err != nil {

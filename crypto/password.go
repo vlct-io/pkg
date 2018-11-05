@@ -1,4 +1,4 @@
-package crypter
+package crypto
 
 import (
 	"encoding/base64"
