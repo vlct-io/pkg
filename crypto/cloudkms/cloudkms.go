@@ -4,13 +4,12 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/pkg/errors"
-
 	"github.com/vlct-io/pkg/crypto"
+	"github.com/vlct-io/pkg/logger"
 	"golang.org/x/oauth2/google"
 	cloudkms "google.golang.org/api/cloudkms/v1"
 )
@@ -37,6 +36,7 @@ type cloudKMS struct {
 
 // validate interface conformity.
 var _ crypto.Crypter = cloudKMS{}
+var log = logger.New()
 
 // New makes a crypto.Crypter.
 func New(projectID, locationID, keyRingID, cryptoKeyID string) crypto.Crypter {
@@ -52,7 +52,6 @@ func New(projectID, locationID, keyRingID, cryptoKeyID string) crypto.Crypter {
 		CryptoKeyID:  cryptoKeyID,
 		authedClient: authedClient,
 	}
-	log.Println("ensuring keys")
 	err = kms.EnsureKeys()
 	if err != nil {
 		log.Fatal(err)
@@ -76,7 +75,7 @@ func (kms cloudKMS) EnsureKeys() error {
 	// find our keyring, exit when we do
 	for _, keyRing := range res.KeyRings {
 		if strings.Contains(keyRing.Name, kms.KeyRingID) {
-			log.Printf("KeyRing found! %v\n", keyRing.Name)
+			log.Printf("Using keyring from %v\n", keyRing.Name)
 			return nil
 		}
 	}
@@ -145,7 +144,7 @@ func (kms cloudKMS) createKeyring(keyRing string) error {
 	if err != nil {
 		return err
 	}
-	log.Print("Created key ring.")
+	log.Printf("Created key ring %v\n", parent)
 	return nil
 }
 
@@ -164,7 +163,7 @@ func (kms cloudKMS) createCryptoKey(keyRing, key string) error {
 	if err != nil {
 		return err
 	}
-	log.Println("Created crypto key.")
+	log.Printf("Created crypto key %v\n", parent)
 
 	return nil
 }
