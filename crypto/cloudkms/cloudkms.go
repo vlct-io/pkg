@@ -89,7 +89,7 @@ func (kms cloudKMS) EnsureKeys() error {
 		return errors.Wrap(err, "failed to create key")
 	}
 
-	return errors.New("keyRing not found! Generate one at: 'https://console.cloud.google.com/security/kms?authuser=1&project=vaultex-net'")
+	return errors.New("keyRing not found! Generate one at: https://console.cloud.google.com/security/kms")
 }
 
 // Encrypt handles all cloudKMS service operations to successfully encrypt the plainText.
