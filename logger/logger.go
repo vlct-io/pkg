@@ -13,6 +13,6 @@ type Log struct {
 // New returns an initialized Log with defaults setup.
 func New() *Log {
 	return &Log{
-		log.New(os.Stderr, "", log.Lshortfile|log.Ldate),
+		log.New(os.Stderr, "", log.Lshortfile),
 	}
 }
