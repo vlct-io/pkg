@@ -3,6 +3,8 @@ package logger
 import (
 	"path/filepath"
 	"runtime"
+
+	"cloud.google.com/go/errorreporting"
 )
 
 const (
@@ -33,4 +35,11 @@ func (log *Log) LogIfErr(err error) error {
 	}
 	log.Printf("%v\n %v:%v", err, filepath.Base(file), line)
 	return err
+}
+
+func (log *Log) ErrReport(err error) {
+	log.Report(errorreporting.Entry{
+		Error: err,
+	})
+	log.Print(err)
 }

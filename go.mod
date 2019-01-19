@@ -1,7 +1,7 @@
 module github.com/vlct-io/pkg
 
 require (
-	cloud.google.com/go v0.26.0
+	cloud.google.com/go v0.34.0
 	github.com/gobuffalo/uuid v2.0.5+incompatible
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/googleapis/gax-go v2.0.2+incompatible // indirect

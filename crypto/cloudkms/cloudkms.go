@@ -43,7 +43,7 @@ type cloudKMS struct {
 
 // validate interface conformity.
 var _ crypto.Crypter = cloudKMS{}
-var log = logger.New()
+var log = logger.New(nil)
 
 // New makes a crypto.Crypter.
 func New(projectID, locationID, keyRingID, cryptoKeyID string) crypto.Crypter {
