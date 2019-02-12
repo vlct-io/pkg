@@ -8,5 +8,4 @@ require (
 	github.com/pkg/errors v0.8.1
 	golang.org/x/oauth2 v0.0.0-20181203162652-d668ce993890
 	google.golang.org/api v0.1.0
-	google.golang.org/genproto v0.0.0-20181202183823-bd91e49a0898
 )

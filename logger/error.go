@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"net/http"
 	"path/filepath"
 	"runtime"
 
@@ -37,9 +38,11 @@ func (log *Log) LogIfErr(err error) error {
 	return err
 }
 
-func (log *Log) ErrReport(err error) {
+func (log *Log) ErrReport(err error, user string, req *http.Request) {
 	log.Report(errorreporting.Entry{
 		Error: err,
+		User:  user,
+		Req:   req,
 	})
 	log.Print(err)
 }

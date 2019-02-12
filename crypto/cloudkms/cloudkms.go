@@ -43,7 +43,7 @@ type cloudKMS struct {
 
 // validate interface conformity.
 var _ crypto.Crypter = cloudKMS{}
-var log = logger.New(nil)
+var log = logger.New("[crypter] ", nil)
 
 // New makes a crypto.Crypter.
 func New(projectID, locationID, keyRingID, cryptoKeyID string) crypto.Crypter {
@@ -67,6 +67,7 @@ func New(projectID, locationID, keyRingID, cryptoKeyID string) crypto.Crypter {
 	return kms
 }
 
+// Generates the provided keys if not present.
 func (kms cloudKMS) EnsureKeys() error {
 	var err error
 	kmsService, err := cloudkms.New(kms.authedClient)
@@ -99,7 +100,7 @@ func (kms cloudKMS) EnsureKeys() error {
 	return errors.New("keyRing not found! Generate one at: https://console.cloud.google.com/security/kms")
 }
 
-// Encrypt handles all cloudKMS service operations to successfully encrypt the plainText.
+// Encrypt attempts to successfully encrypt the plainText.
 func (kms cloudKMS) Encrypt(plaintext []byte) ([]byte, error) {
 	client := kms.authedClient
 	cloudKMSService, err := cloudkms.New(client)
@@ -112,14 +113,15 @@ func (kms cloudKMS) Encrypt(plaintext []byte) ([]byte, error) {
 	req := &cloudkms.EncryptRequest{
 		Plaintext: base64.StdEncoding.EncodeToString(plaintext),
 	}
-	resp, err := cloudKMSService.Projects.Locations.KeyRings.CryptoKeys.Encrypt(parentName, req).Do()
+	res, err := cloudKMSService.Projects.Locations.KeyRings.CryptoKeys.Encrypt(parentName, req).Do()
 	if err != nil {
+
 		return nil, err
 	}
-	return base64.StdEncoding.DecodeString(resp.Ciphertext)
+	return base64.StdEncoding.DecodeString(res.Ciphertext)
 }
 
-// Decrypt handles all cloudKMS service operations to successfully Decrypt the cypherText.
+// Decrypt attempts to successfully decrypt the cipherText.
 func (kms cloudKMS) Decrypt(ciphertext []byte) ([]byte, error) {
 	client := kms.authedClient
 	cloudKMSService, err := cloudkms.New(client)
@@ -139,7 +141,7 @@ func (kms cloudKMS) Decrypt(ciphertext []byte) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(resp.Plaintext)
 }
 
-// Sign will sign a plaintext message using a saved asymmetric private key.
+// Sign will sign a plaintext message using an asymmetric private key.
 // example keyName: "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
 func (kms cloudKMS) Sign(message []byte) ([]byte, error) {
 	var err error
