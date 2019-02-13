@@ -1,3 +1,17 @@
+// Copyright 2019 Vaultex, Inc
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License a
+//  
+//    http://www.apache.org/licenses/LICENSE-2.
+//    
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+
 package cloudKMS
 
 import (
@@ -61,7 +75,7 @@ func New(projectID, locationID, keyRingID, cryptoKeyID string) crypto.Crypter {
         ProjectID:    projectID,
         LocationID:   locationID,
         KeyRingID:    keyRingID,
-        CryptoKeyID:  cryptoKeyID + "_crypto",
+        CryptoKeyID:  cryptoKeyID,
         SigningKeyID: cryptoKeyID + "_sign",
         authedClient: authedClient,
         service:      kmsService,
@@ -70,6 +84,8 @@ func New(projectID, locationID, keyRingID, cryptoKeyID string) crypto.Crypter {
 }
 
 // Generates the provided keys if not present.
+//
+// DON't USE: not production ready
 func (kms cloudKMS) EnsureKeys() error {
     var err error
     kmsService, err := cloudkms.New(kms.authedClient)
@@ -112,7 +128,6 @@ func (kms cloudKMS) Encrypt(plaintext []byte) ([]byte, error) {
     }
     res, err := kms.service.Projects.Locations.KeyRings.CryptoKeys.Encrypt(parentName, req).Do()
     if err != nil {
-
         return nil, err
     }
     return base64.StdEncoding.DecodeString(res.Ciphertext)
@@ -135,6 +150,8 @@ func (kms cloudKMS) Decrypt(ciphertext []byte) ([]byte, error) {
 
 // Sign will sign a plaintext message using an asymmetric private key.
 // example keyName: "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
+//
+// DON't USE: not production ready
 func (kms cloudKMS) Sign(message []byte) ([]byte, error) {
     var err error
     kmsService, err := cloudkms.New(kms.authedClient)
@@ -162,6 +179,8 @@ func (kms cloudKMS) Sign(message []byte) ([]byte, error) {
 
 // verifySignatureEC will verify that an 'EC_SIGN_P256_SHA256' signature is valid for a given message.
 // example keyName: "projects/PROJECT_ID/locations/global/keyRings/RING_ID/cryptoKeys/KEY_ID/cryptoKeyVersions/1"
+//
+// DON't USE: not production ready
 func (kms cloudKMS) Verify(signature, message []byte) error {
     var err error
     kmsService, err := cloudkms.New(kms.authedClient)
@@ -200,6 +219,7 @@ func (kms cloudKMS) Verify(signature, message []byte) error {
     return nil
 }
 
+// DON't USE: not production ready
 func (kms cloudKMS) createKeyring(keyRing string) error {
     client, err := cloudkms.New(kms.authedClient)
     if err != nil {
@@ -217,6 +237,7 @@ func (kms cloudKMS) createKeyring(keyRing string) error {
     return nil
 }
 
+// DON't USE: not production ready
 func (kms cloudKMS) createCryptoKeys() error {
     client, err := cloudkms.New(kms.authedClient)
     if err != nil {
